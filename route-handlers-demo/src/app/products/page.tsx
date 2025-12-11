@@ -4,7 +4,7 @@ export default function ProductsPage() {
     // console.log("Products server component rendered");
     return (
       <div>
-        <h1>Products Page</h1>
+        <h1>Featured Products</h1>
         <Link href="/products/1">Product 1</Link>
         <Link href="/products/2">Product 2</Link>
         <Link href="/products/3">Product 3</Link>
