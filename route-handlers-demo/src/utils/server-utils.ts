@@ -1,5 +1,7 @@
-export const serverSideFunction = () => {
+import "server-only"
 
+export const serverSideFunction = () => {
+""
     console.log(
         `use multiple libraries,
          use environment variables,
