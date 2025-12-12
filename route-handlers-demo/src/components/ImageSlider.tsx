@@ -1,29 +1,22 @@
 "use client";
 
-import { useTheme } from "@/components/theme-provider";
-
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "@/app/globals.css";
-// import {serverSideFunction} from "@/utils/server-utils";
 
-export default function ClientRoutePage() {
-  const theme = useTheme();
+// import {serverSideFunction} from "@/utils/server-utils"; 
 
-  console.log("Theme Colors:", theme.colors);
-
-  //   var settings = {
-  //   dots: true,
-  //   infinite: true,
-  //   speed: 500,
-  //   slidesToShow: 1,
-  //   slidesToScroll: 1
-  // };
-
+export default function ImageSlider() {
+    var settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1
+  };
   return (
-    <>
-      {/* <div className="image-slider-container">
+<div className="image-slider-container">
     <Slider {...settings}>
       <div>
         <img src="https://img.freepik.com/free-photo/beautiful-tree-middle-field-covered-with-grass-with-tree-line-background_181624-29267.jpg?semt=ais_hybrid&w=740&q=80" alt="Image 1"/>
@@ -44,10 +37,6 @@ export default function ClientRoutePage() {
         <img src="https://www.shutterstock.com/image-photo/sun-sets-behind-mountain-ranges-600nw-2479236003.jpg" alt="Image 6"/>
       </div>
     </Slider>
-</div> */}
-      <h2 style={{ color: theme.colors.secondary }}>
-        Client Route Page with Theme
-      </h2>
-    </>
-  );
+    </div>
+  )
 }
