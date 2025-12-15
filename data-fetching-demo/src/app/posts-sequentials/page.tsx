@@ -16,6 +16,7 @@ type Post = {
     body: string;
 };
 
+
 export default async function PostsSequentials() {
     const resUsers = await fetch("https://jsonplaceholder.typicode.com/users");
     if (!resUsers.ok) {
@@ -23,7 +24,7 @@ export default async function PostsSequentials() {
     }
     const users: User[] = await resUsers.json();
 
-    const resPosts = await fetch("https://jsonplaceholder.typicode.com/posts");
+    const resPosts = await fetch("https://jsonplaceholder.typicode.com/posts"); // Fetch all posts
     if (!resPosts.ok) {
         throw new Error("Failed to fetch posts");
     }
@@ -31,7 +32,7 @@ export default async function PostsSequentials() {
 
     const filteredPosts = posts.filter((post) => post.id % 10 === 1);
 
-        return (
+    return (
         <div>
             <h1>Blog Posts</h1>
             <ul>
