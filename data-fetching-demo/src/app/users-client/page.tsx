@@ -1,4 +1,6 @@
-import { useState, useEffect, use } from "react";
+"use client";
+
+import { useState, useEffect} from "react";
 
 type User = {
     id: number;
@@ -8,7 +10,7 @@ type User = {
     phone: string;
 }
 
-export default async function UsersClient() {
+export default function UsersClient() {
    const [users, setUsers] = useState<User[]>([]);
    const [loading, setLoading] = useState(true);
    const [error, setError] = useState("");
