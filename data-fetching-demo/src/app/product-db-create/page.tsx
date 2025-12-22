@@ -7,6 +7,7 @@ import { Submit } from "@/components/submit";
 async function addProduct(formData: FormData) {
   "use server";
 
+  // Extract form data
   const title = formData.get("title") as string;
   const priceStr = formData.get("price") as string;
   const description = formData.get("description") as string;
