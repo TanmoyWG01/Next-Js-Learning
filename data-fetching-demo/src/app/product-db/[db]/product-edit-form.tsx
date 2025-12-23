@@ -1,15 +1,19 @@
 "use client";
 
 import { useActionState } from "react";
-import { listProducts } from "@/app/prisma-db"; 
+import { getProduct, products } from "@/app/prisma-db"; 
 import { Submit } from "@/components/submit";
 import { addProduct, FormState } from "./actions";
 
-export default function AddProductPage({ products = [] }: { products?: any[] }) {
+
+export default function EditProductPage({ params }: {params:Promise<{db:string}>}) {
   
   const initialFormState: FormState = {
     errors: {},
   };
+
+  const {id} = await params;
+  const product = await getProduct(Number(id));
 
   // Fixed: Passing the correct action and initial state
   const [state, formAction] = useActionState(addProduct, initialFormState);
