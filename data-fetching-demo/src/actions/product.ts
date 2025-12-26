@@ -69,6 +69,46 @@ export async function updateProductAction(id: number, formData: FormData) {
 	return updated;
 }
 
+export async function editProductAction(formData: FormData) {
+	const id = Number(formData.get("id"));
+	const name = formData.get("name") as string;
+	const priceStr = formData.get("price") as string;
+	const description = formData.get("description") as string;
+	const imageUrl = formData.get("imageUrl") as string;
+
+	if (!id || Number.isNaN(id)) {
+		throw new Error("Invalid product ID");
+	}
+
+	// Validation
+	if (!name?.trim()) {
+		throw new Error("Product name is required");
+	}
+	if (!description?.trim()) {
+		throw new Error("Description is required");
+	}
+
+	const price = Number(priceStr);
+	if (Number.isNaN(price) || price <= 0) {
+		throw new Error("Price must be a positive number");
+	}
+
+	const updated = updateProduct(id, {
+		name: name.trim(),
+		price,
+		description: description.trim(),
+		imageUrl: imageUrl?.trim() || "/images/placeholder.jpg",
+	});
+
+	if (!updated) {
+		throw new Error("Product not found");
+	}
+
+	revalidatePath("/product-db");
+	revalidatePath(`/product-db/${id}`);
+	redirect(`/product-db/${id}`);
+}
+
 export async function deleteProductAction(id: number) {
 	const deleted = deleteProduct(id);
 
