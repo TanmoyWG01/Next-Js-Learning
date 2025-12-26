@@ -1,30 +1,109 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createProduct } from "@/app/prisma-db";
+import {
+  createProduct,
+  updateProduct as updateProductInDb,
+} from "@/app/prisma-db";
 
+/**
+ * Validation error structure
+ */
 export type Errors = {
   title?: string;
   price?: string;
   description?: string;
 };
 
+/**
+ * Form state returned to useActionState
+ */
 export type FormState = {
   errors: Errors;
 };
 
-// Fixed signature: must accept prevState as the first argument
-export async function addProduct(prevState: FormState, formData: FormData): Promise<FormState> {
-  // 1. Extract form data
-  const title = formData.get("title") as string;
-  const priceStr = formData.get("price") as string;
-  const description = formData.get("description") as string;
+/**
+ * Create Product Action
+ */
+export async function addProduct(
+  _prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const validation = validateProductForm(formData);
+
+  if ("errors" in validation) {
+    return { errors: validation.errors };
+  }
+
+  try {
+    await createProduct(validation.data);
+  } catch {
+    return { errors: { title: "Failed to create product" } };
+  }
+
+  revalidatePath("/products");
+
+  return { errors: {} };
+}
+
+/**
+ * Update Product Action
+ */
+export async function updateProduct(
+  _prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const id = Number(formData.get("id"));
+
+  if (Number.isNaN(id)) {
+    return { errors: { title: "Invalid product ID" } };
+  }
+
+  const validation = validateProductForm(formData);
+
+  if ("errors" in validation) {
+    return { errors: validation.errors };
+  }
+
+  try {
+    const updated = updateProductInDb(id, validation.data);
+
+    if (!updated) {
+      return { errors: { title: "Product not found" } };
+    }
+  } catch {
+    return { errors: { title: "Failed to update product" } };
+  }
+
+  revalidatePath("/products");
+  revalidatePath(`/products/${id}`);
+
+  return { errors: {} };
+}
+
+/**
+ * Shared validation logic
+ */
+function validateProductForm(
+  formData: FormData
+):
+  | {
+      data: {
+        name: string;
+        price: number;
+        description: string;
+        imageUrl: string;
+      };
+    }
+  | { errors: Errors } {
+  const title = formData.get("title")?.toString().trim();
+  const priceStr = formData.get("price")?.toString();
+  const description = formData.get("description")?.toString().trim();
   const price = Number(priceStr);
 
   const errors: Errors = {};
 
-  // 2. Validation (This fixes the "Cannot find name title" errors)
-  if (!title || !title.trim()) {
+  if (!title) {
     errors.title = "Title is required";
   }
 
@@ -32,30 +111,20 @@ export async function addProduct(prevState: FormState, formData: FormData): Prom
     errors.price = "Price must be a positive number";
   }
 
-  if (!description || !description.trim()) {
+  if (!description) {
     errors.description = "Description is required";
   }
 
-  // 3. Return errors if validation fails
   if (Object.keys(errors).length > 0) {
     return { errors };
   }
 
-  // 4. Create product
-  try {
-    await createProduct({
-      name: title.trim(),
+  return {
+    data: {
+      name: title!,
       price,
-      description: description.trim(),
+      description: description!,
       imageUrl: "/images/placeholder.jpg",
-    });
-  } catch (err) {
-    return { errors: { title: "Database error occurred" } };
-  }
-
-  // 5. Revalidate the path to update the list
-  revalidatePath("/product-db-create");
-  
-  // Return empty errors on success
-  return { errors: {} };
+    },
+  };
 }
