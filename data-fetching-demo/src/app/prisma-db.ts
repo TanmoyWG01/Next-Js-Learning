@@ -49,6 +49,15 @@ export function listProducts(): Product[] {
 }
 
 /**
+ * Search products by name (case-insensitive substring match)
+ */
+export function searchProducts(query: string): Product[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return products;
+  return products.filter((p) => p.name.toLowerCase().includes(q));
+}
+
+/**
  * Get product by ID
  */
 export function getProduct(id: number): Product | undefined {
