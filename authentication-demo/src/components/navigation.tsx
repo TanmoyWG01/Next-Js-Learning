@@ -1,6 +1,5 @@
-import { SignInButton, SignOutButton, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignInButton, SignOutButton, UserButton, SignedIn, SignedOut, SignUpButton } from "@clerk/nextjs";
 import Link from "next/link";
-
 
 export default function Navigation() {
   return (
@@ -13,7 +12,14 @@ export default function Navigation() {
             </h1>
           </div>
           <div className="flex items-center gap-4">
-            <SignedOut><SignInButton mode="modal"/></SignedOut>
+            <SignedOut>
+              <SignInButton>
+                <button className="px-4 py-2 bg-[var(--foreground)] text-[var(--background)] rounded-md hover:bg-[var(--foreground)/90] transition cursor-pointer">Sign In</button>
+              </SignInButton>
+              <SignUpButton> 
+                <button className="px-4 py-2 bg-[var(--foreground)] text-[var(--background)] rounded-md hover:bg-[var(--foreground)/90] transition cursor-pointer">Sign Up</button>
+              </SignUpButton>
+            </SignedOut>
             {/* <SignInButton mode="modal"/> */}
             <SignedIn>
             {/* <UserButton /> */}
